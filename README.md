@@ -76,7 +76,7 @@ Neural-Style-Transfer/
 ├── output/
 │   └── your_output_image.jpg
 │
-├── neural_style_transfer.py
+├── nst.ipynb
 ├── requirements.txt
 └── README.md
 ```
