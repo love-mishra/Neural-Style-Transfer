@@ -1,20 +1,89 @@
-# Neural Style Transfer Report
+ 
+# Neural Style Transfer Project
 
-## Introduction
+## Project Overview
 
-Neural Style Transfer (NST) is a technique that involves blending the content of one image with the style of another using convolutional neural networks (CNNs). This technique is widely used in digital art and design, enabling artists to create unique images by merging different artistic styles with various contents. In this project, we implemented an NST algorithm using PyTorch, applying the style of famous artworks to various content images.
+This project implements Neural Style Transfer (NST) using a pre-trained VGG19 network. The objective of NST is to blend the content of one image with the style of another image, creating a new image that retains the core elements of the content image while adopting the artistic features of the style image. This technique leverages the power of deep learning and convolutional neural networks (CNNs) to extract and recombine visual features.
+
+---
+
+## Installation Instructions
+
+### Prerequisites
+
+- Python 3.x
+- PyTorch
+- torchvision
+- PIL (Python Imaging Library)
+- Matplotlib
+
+### Setup Environment
+
+1. **Clone the repository:**
+   ```sh
+   git clone https://github.com/yourusername/Neural-Style-Transfer.git
+   cd Neural-Style-Transfer
+   ```
+
+---
+
+## Usage
+
+### Running the Style Transfer
+
+1. **Prepare your content and style images:**
+   Place your content and style images in the `Neural-Style-Transfer/content` and `Neural-Style-Transfer/style` directories, respectively.
+
+2. **Execute the script:**
+   ```sh
+   python neural_style_transfer.py --content content/your_content_image.jpg --style style/your_style_image.jpg --output output/your_output_image.jpg
+   ```
+
+### Example
+```sh
+python neural_style_transfer.py --content Neural-Style-Transfer/content/figures.jpg --style Neural-Style-Transfer/style/flowers_crop.jpg --output Neural-Style-Transfer/output/figures_flowers_crop.jpg
+```
+
+This command will generate a stylized image by blending the content of `figures.jpg` with the style of `flowers_crop.jpg` and save the result as `figures_flowers_crop.jpg` in the `Neural-Style-Transfer/output` directory.
+
+---
+
+## Dependencies
+
+The project requires the following libraries:
+
+- torch
+- torchvision
+- pillow
+- matplotlib
+
+You can install them using the following command:
+```sh
+pip install torch torchvision pillow matplotlib
+```
+
+---
+
+## Directory Structure
+
+```
+Neural-Style-Transfer/
+│
+├── content/
+│   └── your_content_image.jpg
+├── style/
+│   └── your_style_image.jpg
+├── output/
+│   └── your_output_image.jpg
+│
+├── neural_style_transfer.py
+├── requirements.txt
+└── README.md
+```
+
+---
 
 ## Methodology
-
-### Overview
-
-The goal of this project is to transfer the style of a style image to a content image, resulting in a new image that maintains the content of the original content image but adopts the artistic style of the style image. We used a pre-trained VGG19 network for feature extraction and defined a custom model to compute content and style losses. The process involves the following steps:
-
-1. Load and preprocess the content and style images.
-2. Define a custom neural network model for style transfer.
-3. Compute content and style losses.
-4. Optimize the input image to minimize the combined loss.
-5. Generate and save the stylized image.
 
 ### Image Preprocessing
 
@@ -72,10 +141,10 @@ class ContentLoss(nn.Module):
 class StyleLoss(nn.Module):
     def __init__(self, target_feature):
         super(StyleLoss, self).__init__()
-        self.target = StyleTransfer.gram_matrix(self, target_feature).detach()
+        self.target = gram_matrix(target_feature).detach()
 
     def forward(self, input):
-        G = StyleTransfer.gram_matrix(self, input)
+        G = gram_matrix(input)
         self.loss = nn.functional.mse_loss(G, self.target)
         return input
 ```
@@ -85,7 +154,7 @@ class StyleLoss(nn.Module):
 The Gram matrix is a mathematical representation of the style of an image. It captures the correlation between different features in the image.
 
 ```python
-def gram_matrix(self, input):
+def gram_matrix(input):
     a, b, c, d = input.size()
     features = input.view(a * b, c * d)
     G = torch.mm(features, features.t())
@@ -155,12 +224,6 @@ class StyleTransfer(nn.Module):
         model = model[:(i + 1)]
 
         return model, content_losses, style_losses
-
-    def gram_matrix(self, input):
-        a, b, c, d = input.size()
-        features = input.view(a * b, c * d)
-        G = torch.mm(features, features.t())
-        return G.div(a * b * c * d)
 ```
 
 ### Style Transfer Optimization
@@ -198,8 +261,6 @@ def run_style_transfer(style_transfer, input_img, num_steps=300,
             loss.backward()
 
             run[0] += 1
-            sl=style_score
-            cl=content_score
             if run[0] % 50 == 0:
                 print(f"run {run[0]}:")
                 print(f'Style Loss : {style_score.item():4f} Content Loss: {content_score.item():4f}')
@@ -215,7 +276,9 @@ def run_style_transfer(style_transfer, input_img, num_steps=300,
 ### Implementation Details
 
 1. **Dataset Preparation**: The content and style images were stored in separate directories. We processed all combinations of content and style images to generate the output images.
-2. **Model Execution**: For each pair of content and style images, we built a style transfer model and ran the optimization process to generate the stylized image.
+2. **Model Execution**: For each
+
+ pair of content and style images, we built a style transfer model and ran the optimization process to generate the stylized image.
 3. **Saving Outputs**: The output images were saved in a specified directory.
 
 ```python
@@ -224,7 +287,7 @@ cnn = models.vgg19(pretrained=True).features.to(device).eval()
 cnn_normalization_mean = torch.tensor([0.485, 0.456, 0.406]).to(device)
 cnn_normalization_std = torch.tensor([0.229, 0.224, 0.225]).to(device)
 
-working_dir = "/path/to/working_dir"
+working_dir = "Neural-Style-Transfer"
 content_dir = os.path.join(working_dir, "content")
 style_dir = os.path.join(working_dir, "style")
 output_dir = os.path.join(working_dir, "output")
@@ -235,14 +298,14 @@ style_images = os.listdir(style_dir)
 
 for content_image_name in content_images:
     for style_image_name in style_images:
-        content_image_path = os.path.join(content
-
-_dir, content_image_name)
+        content_image_path = os.path.join(content_dir, content_image_name)
         style_image_path = os.path.join(style_dir, style_image_name)
         output_image_name = f"{os.path.splitext(content_image_name)[0]}_{os.path.splitext(style_image_name)[0]}.jpg"
-        print("Building model for content image ",os.path.splitext(content_image_name)[0]," Vs style image ",os.path.splitext(style_image_name)[0])
+        
+        print("Building model for content image ", os.path.splitext(content_image_name)[0], " Vs style image ", os.path.splitext(style_image_name)[0])
+        
         content_image = load_image(content_image_path)
-        style_image = load_image(style_image_path, get_image_size(content_image))
+        style_image = load_image(style_image_path, (content_image.size(2), content_image.size(3)))
 
         style_transfer = StyleTransfer(cnn, cnn_normalization_mean, cnn_normalization_std, content_image, style_image)
 
@@ -262,15 +325,24 @@ _dir, content_image_name)
 The results of the style transfer process were visually inspected by comparing the content, style, and output images. The output images successfully blended the content of the content images with the style of the style images.
 
 ```python
+def imshow(tensor, title=None):
+    image = tensor.cpu().clone()
+    image = image.squeeze(0)
+    image = transforms.ToPILImage()(image)
+    plt.imshow(image)
+    if title is not None:
+        plt.title(title)
+    plt.pause(0.001)
+
 for content_image_name in content_images:
     content_image_path = os.path.join(content_dir, content_image_name)
     content_image = load_image(content_image_path)
     
-    plt.figure(figsize=(100, 5 * len(style_images)))
+    plt.figure(figsize=(10, 5 * len(style_images)))
     
     for idx, style_image_name in enumerate(style_images, start=1):
         style_image_path = os.path.join(style_dir, style_image_name)
-        style_image = load_image(style_image_path, get_image_size(content_image))
+        style_image = load_image(style_image_path, (content_image.size(2), content_image.size(3)))
         output_image_name = f"{os.path.splitext(content_image_name)[0]}_{os.path.splitext(style_image_name)[0]}.jpg"
         output_image_path = os.path.join(output_dir, output_image_name)
         output_image = load_image(output_image_path)
