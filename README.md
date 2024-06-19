@@ -21,7 +21,7 @@ This project implements Neural Style Transfer (NST) using a pre-trained VGG19 ne
 
 1. **Clone the repository:**
    ```sh
-   git clone https://github.com/yourusername/Neural-Style-Transfer.git
+   git clone https://github.com/love-mishra/Neural-Style-Transfer.git
    cd Neural-Style-Transfer
    ```
 
