@@ -1,4 +1,3 @@
-# Neural-Style-Transfer
 # Neural Style Transfer Report
 
 ## Introduction
@@ -237,3 +236,66 @@ style_images = os.listdir(style_dir)
 for content_image_name in content_images:
     for style_image_name in style_images:
         content_image_path = os.path.join(content
+
+_dir, content_image_name)
+        style_image_path = os.path.join(style_dir, style_image_name)
+        output_image_name = f"{os.path.splitext(content_image_name)[0]}_{os.path.splitext(style_image_name)[0]}.jpg"
+        print("Building model for content image ",os.path.splitext(content_image_name)[0]," Vs style image ",os.path.splitext(style_image_name)[0])
+        content_image = load_image(content_image_path)
+        style_image = load_image(style_image_path, get_image_size(content_image))
+
+        style_transfer = StyleTransfer(cnn, cnn_normalization_mean, cnn_normalization_std, content_image, style_image)
+
+        input_image = content_image.clone()
+
+        output_image = run_style_transfer(style_transfer, input_image)
+
+        output_image_path = os.path.join(output_dir, output_image_name)
+        output_image_pil = transforms.ToPILImage()(output_image.squeeze(0).cpu())
+        output_image_pil.save(output_image_path)
+
+        print(f"Saved stylized image: {output_image_path}")
+```
+
+### Results
+
+The results of the style transfer process were visually inspected by comparing the content, style, and output images. The output images successfully blended the content of the content images with the style of the style images.
+
+```python
+for content_image_name in content_images:
+    content_image_path = os.path.join(content_dir, content_image_name)
+    content_image = load_image(content_image_path)
+    
+    plt.figure(figsize=(100, 5 * len(style_images)))
+    
+    for idx, style_image_name in enumerate(style_images, start=1):
+        style_image_path = os.path.join(style_dir, style_image_name)
+        style_image = load_image(style_image_path, get_image_size(content_image))
+        output_image_name = f"{os.path.splitext(content_image_name)[0]}_{os.path.splitext(style_image_name)[0]}.jpg"
+        output_image_path = os.path.join(output_dir, output_image_name)
+        output_image = load_image(output_image_path)
+        
+        row_index = (idx - 1) * 3
+        
+        plt.subplot(len(style_images), 3, row_index + 1)
+        imshow(content_image, title='Content Image')
+        
+        plt.subplot(len(style_images), 3, row_index + 2)
+        imshow(style_image, title='Style Image')
+        
+        plt.subplot(len(style_images), 3, row_index + 3)
+        imshow(output_image, title='Output Image')
+    
+    plt.tight_layout()
+    plt.show()
+```
+
+### Challenges
+
+1. **Computation Time**: The optimization process is computationally intensive and time-consuming, especially when processing high-resolution images.
+2. **Hyperparameter Tuning**: Finding the right balance between style and content weights was crucial for achieving visually appealing results.
+3. **Image Quality**: Maintaining high image quality while transferring the style effectively was challenging.
+
+## Conclusion
+
+Neural Style Transfer is a powerful technique for blending artistic styles with different content images. By leveraging the capabilities of deep neural networks, we can create visually stunning images that combine the content of one image with the style of another. Despite the challenges in computation time and hyperparameter tuning, the results demonstrate the effectiveness of the NST algorithm in generating unique and artistic images. This project showcases the potential of deep learning in the field of digital art and design.
