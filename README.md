@@ -29,22 +29,13 @@ This project implements Neural Style Transfer (NST) using a pre-trained VGG19 ne
 
 ## Usage
 
-### Running the Style Transfer
-
-1. **Prepare your content and style images:**
-   Place your content and style images in the `Neural-Style-Transfer/content` and `Neural-Style-Transfer/style` directories, respectively.
-
-2. **Execute the script:**
-   ```sh
-   python neural_style_transfer.py --content content/your_content_image.jpg --style style/your_style_image.jpg --output output/your_output_image.jpg
-   ```
+ - put your all content images in content folder 
+ - put your all style images in style folder 
+ - run nst.ipynb automatically output images will be saved in output folder 
 
 ### Example
-```sh
-python neural_style_transfer.py --content Neural-Style-Transfer/content/figures.jpg --style Neural-Style-Transfer/style/flowers_crop.jpg --output Neural-Style-Transfer/output/figures_flowers_crop.jpg
-```
-
-This command will generate a stylized image by blending the content of `figures.jpg` with the style of `flowers_crop.jpg` and save the result as `figures_flowers_crop.jpg` in the `Neural-Style-Transfer/output` directory.
+ 
+ - after the nst.ipynb stylized image by blending the content of `figures.jpg` with the style of `flowers_crop.jpg` and save the result as `figures_flowers_crop.jpg` in the `Neural-Style-Transfer/output` directory.
 
 ---
 
